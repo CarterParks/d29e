@@ -1,14 +1,14 @@
-import System.IO
-import Control.Monad
+import System.Environment
 import Data.List
 
 main :: IO ()
 main = do
-  contents <- readFile "words_alpha.txt"
-  putStrLn (intercalate "\n" (i18n . lines contents))
+  args <- getArgs
+  file <- readFile $ head args
+  putStrLn (intercalate "\n" (d29e file))
 
-i18n :: [String] -> [String]
-i18n = stab . shrt . prune . concat . comb 
+d29e :: String -> [String]
+d29e = stab . shrt . concat . comb . (\xs -> map init xs) . lines
 
 -- strings and their abbreviations
 stab :: [String] -> [String]
@@ -21,10 +21,6 @@ abbr x = [head x] ++ (show (length x - 2)) ++ [last x]
 -- shortest words, alphabetically
 shrt :: [String] -> [String]
 shrt xs = sortBy (\a b -> compare (length a) (length b)) (sort xs)
-
--- non trivial words
-prune :: [String] -> [String]
-prune xs = filter (\x -> length x > 3) xs
 
 -- first-last letter combo, find unique middle letter counts
 comb :: [String] -> [[String]]
